@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { modalStyles } from "../assets/dummyStyles";
 import { X } from "lucide-react";
 
@@ -36,6 +36,7 @@ const AddTransactionModal = ({
   const minDate = `${currentYear}-01-01`;
 
   const colorClass = modalStyles.colorClasses[color];
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Valid categories matching backend schema
   const INCOME_CATEGORIES = ["Salary", "Freelance", "Investments"];
@@ -74,9 +75,15 @@ const AddTransactionModal = ({
         </div>
 
         <form
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            handleAddTransaction();
+            if (isSubmitting) return;
+            setIsSubmitting(true);
+            try {
+              await handleAddTransaction();
+            } finally {
+              setIsSubmitting(false);
+            }
           }}
         >
           <div className={modalStyles.form}>
@@ -191,9 +198,10 @@ const AddTransactionModal = ({
 
             <button
               type="submit"
-              className={modalStyles.submitButton(colorClass.button)}
+              disabled={isSubmitting}
+              className={`${modalStyles.submitButton(colorClass.button)} ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {buttonText}
+              {isSubmitting ? "Processing..." : buttonText}
             </button>
           </div>
         </form>
