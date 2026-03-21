@@ -6,7 +6,8 @@ import axios from "axios";
 
 const Login = ({
   onLogin,
-  API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:4000" : ""),
+  API_URL = import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV ? "http://localhost:4000" : ""),
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -91,11 +92,13 @@ const Login = ({
       setPassword("");
     } catch (err) {
       console.error("Login error:", err?.response || err);
-      const serverMsg =
-        err.response?.data?.message ||
-        (err.response?.data ? JSON.stringify(err.response.data) : null) ||
-        err.message ||
-        "Login failed";
+
+      let serverMsg = "Login failed";
+      if (err.response?.data?.message) {
+        serverMsg = err.response.data.message;
+      } else if (err.message) {
+        serverMsg = err.message;
+      }
       setError(serverMsg);
     } finally {
       setIsLoading(false);
