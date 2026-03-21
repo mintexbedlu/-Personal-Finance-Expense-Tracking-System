@@ -21,9 +21,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// database connection
-connectDB();
-
 // Routes
 app.use("/api/user", userRouter);
 app.use("/api/income", incomeRouter);
@@ -37,6 +34,11 @@ app.get(/.*/, (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+};
+
+startServer();
