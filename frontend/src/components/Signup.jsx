@@ -5,7 +5,7 @@ import axios from "axios";
 import { ArrowLeft, Eye, EyeOff, Mail, User, Lock } from "lucide-react";
 
 const Signup = ({
-  API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000",
+  API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:4000" : ""),
   onSignup,
 }) => {
   const [name, setName] = useState("");

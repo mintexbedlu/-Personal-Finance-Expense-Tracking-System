@@ -6,7 +6,7 @@ import axios from "axios";
 
 const Login = ({
   onLogin,
-  API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000",
+  API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:4000" : ""),
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
