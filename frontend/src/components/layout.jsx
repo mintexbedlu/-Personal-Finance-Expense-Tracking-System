@@ -26,7 +26,7 @@ import {
 import axios from "axios";
 import { Outlet } from "react-router-dom";
 
-const API_URL = "http://localhost:4000/api";
+const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:4000"}/api`;
 const CATEGORY_ICONS = {
   Food: <Utensils className="w-4 h-4" />,
   Housing: <Home className="w-4 h-4" />,
@@ -374,7 +374,9 @@ const Layout = ({ onLogout, user }) => {
             </div>
 
             <p className={styles.statCards.cardFooter}>
-              <span className="text-emerald-600 font-medium font-bold">+12.5%</span>
+              <span className="text-emerald-600 font-medium font-bold">
+                +12.5%
+              </span>
               {""}
               last month
             </p>
@@ -428,7 +430,9 @@ const Layout = ({ onLogout, user }) => {
               </div>
             </div>
 
-            <p className={`${styles.statCards.cardFooter} font-semibold text-violet-600`}>
+            <p
+              className={`${styles.statCards.cardFooter} font-semibold text-violet-600`}
+            >
               {getSavingsRating(stats.savingsRate)}
             </p>
           </div>

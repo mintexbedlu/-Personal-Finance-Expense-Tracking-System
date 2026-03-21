@@ -4,7 +4,10 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { ArrowLeft, Eye, EyeOff, Mail, User, Lock } from "lucide-react";
 
-const Signup = ({ API_URL = "http://localhost:4000", onSignup }) => {
+const Signup = ({
+  API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000",
+  onSignup,
+}) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,8 +20,8 @@ const Signup = ({ API_URL = "http://localhost:4000", onSignup }) => {
   //to fetch profile
   const fetchProfile = async (token) => {
     if (!token) return null;
-    const res = await Axis3DIcon.get(`${API_URL}/api/user/me`, {
-      header: { Authorization: `Bearer ${token}` },
+    const res = await axios.get(`${API_URL}/api/user/me`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     return res.data;
@@ -139,7 +142,7 @@ const Signup = ({ API_URL = "http://localhost:4000", onSignup }) => {
           </p>
         </div>
         <div className={signupStyles.formContainer}>
-          {errors.api && <p className={signupStyles.apiError}>{errors.ai}</p>}
+          {errors.api && <p className={signupStyles.apiError}>{errors.api}</p>}
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="mb-6">
@@ -274,7 +277,7 @@ const Signup = ({ API_URL = "http://localhost:4000", onSignup }) => {
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2-647z"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
                   Creating account...
