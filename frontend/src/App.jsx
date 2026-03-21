@@ -15,7 +15,9 @@ import Income from "./pages/Income.jsx";
 import Expense from "./pages/Expense.jsx";
 import Profile from "./pages/Profile.jsx";
 
-const API_URL = "http://localhost:4000";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:4000" : "");
 
 // to get transaction from localstorage
 const getTransactionsFromStorage = () => {
