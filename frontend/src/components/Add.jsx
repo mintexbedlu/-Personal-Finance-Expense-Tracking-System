@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { modalStyles } from "../assets/dummyStyles";
 import { X } from "lucide-react";
 
@@ -36,6 +36,28 @@ const AddTransactionModal = ({
   const minDate = `${currentYear}-01-01`;
 
   const colorClass = modalStyles.colorClasses[color];
+
+  // Valid categories matching backend schema
+  const INCOME_CATEGORIES = ["Salary", "Freelance", "Investments"];
+  const EXPENSE_CATEGORIES = [
+    "Food",
+    "Housing",
+    "Transport",
+    "Entertainment",
+    "Utilities",
+  ];
+
+  const currentCategories =
+    newTransaction.type === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+
+  useEffect(() => {
+    if (!currentCategories.includes(newTransaction.category)) {
+      setNewTransaction((prev) => ({
+        ...prev,
+        category: currentCategories[0],
+      }));
+    }
+  }, [newTransaction.type]);
 
   return (
     <div className={modalStyles.overlay}>
@@ -141,7 +163,7 @@ const AddTransactionModal = ({
                 }
                 className={modalStyles.input(colorClass.ring)}
               >
-                {categories.map((cat) => (
+                {currentCategories.map((cat) => (
                   <option value={cat} key={cat}>
                     {cat}
                   </option>
