@@ -37,6 +37,7 @@ const AddTransactionModal = ({
 
   const colorClass = modalStyles.colorClasses[color];
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   // Valid categories matching backend schema
   const INCOME_CATEGORIES = ["Salary", "Freelance", "Investments"];
@@ -79,14 +80,19 @@ const AddTransactionModal = ({
             e.preventDefault();
             if (isSubmitting) return;
             setIsSubmitting(true);
+            setError("");
             try {
               await handleAddTransaction();
+              setShowModal(false);
+            } catch (err) {
+              setError(err.response?.data?.message || err.message || "Error adding transaction");
             } finally {
               setIsSubmitting(false);
             }
           }}
         >
           <div className={modalStyles.form}>
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
             <div>
               <label className={modalStyles.label}>Description</label>
               <input
