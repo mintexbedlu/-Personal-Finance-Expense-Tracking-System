@@ -139,7 +139,11 @@ const Layout = ({ onLogout, user }) => {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const endpoint =
         transaction.type === "income" ? "income/add" : "expense/add";
-      await axios.post(`${API_URL}/${endpoint}`, transaction, { headers });
+      
+      // Map description to title as backend schema requires 'title'
+      const payload = { ...transaction, title: transaction.description };
+
+      await axios.post(`${API_URL}/${endpoint}`, payload, { headers });
       await fetchTransactions();
       return true;
     } catch (err) {
