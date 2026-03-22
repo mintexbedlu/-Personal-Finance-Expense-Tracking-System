@@ -86,6 +86,8 @@ const ExpensePage = () => {
     setTimeFrame = () => {},
     refreshTransactions,
     addTransaction,
+    editTransaction,
+    deleteTransaction,
   } = useOutletContext();
 
   const [showModal, setShowModal] = useState(false);
@@ -250,7 +252,7 @@ const ExpensePage = () => {
       if (data) config.data = data;
 
       const response = await axios(config);
-      await refreshTransactions();
+      // await refreshTransactions(); // Removed to avoid stale state issues
       await fetchOverview(timeFrame);
 
       return response;
@@ -330,6 +332,11 @@ const ExpensePage = () => {
       };
 
       await handleApiRequest("put", `/expense/update/${editingId}`, payload);
+      editTransaction(editingId, {
+        ...payload,
+        id: editingId,
+        type: "expense",
+      });
       setEditingId(null);
     } catch (err) {
       // Error handled in handleApiRequest
@@ -341,6 +348,7 @@ const ExpensePage = () => {
     if (!id || !window.confirm("Are you sure you want to delete this expense?"))
       return;
     await handleApiRequest("delete", `/expense/delete/${id}`);
+    deleteTransaction(id);
   };
 
   // Export -> GET /expense/downloadexcel (server) with client fallback
@@ -498,7 +506,7 @@ const ExpensePage = () => {
 
         <div
           className={styles.chartHeight}
-          style={{ minHeight: "350px", width: "100%" }}
+          style={{ height: "350px", width: "100%", minHeight: "350px" }}
         >
           <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <AreaChart

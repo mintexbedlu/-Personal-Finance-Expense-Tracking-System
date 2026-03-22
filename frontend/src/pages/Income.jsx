@@ -94,7 +94,7 @@ const IncomeChart = ({ chartData, timeFrame, timeFrameRange }) => (
 
     <div
       className={styles.chartHeight}
-      style={{ minHeight: "350px", width: "100%" }}
+      style={{ height: "350px", width: "100%", minHeight: "350px" }}
     >
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <BarChart
@@ -191,6 +191,8 @@ const Income = () => {
     setTimeFrame = () => {},
     refreshTransactions,
     addTransaction,
+    editTransaction,
+    deleteTransaction,
   } = useOutletContext();
 
   const [showModal, setShowModal] = useState(false);
@@ -374,7 +376,7 @@ const Income = () => {
         addTransaction(savedTx);
       }
 
-      await refreshTransactions();
+      // await refreshTransactions(); // Removed to prevent stale state
       await fetchOverview(timeFrame ?? "monthly");
 
       setNewTransaction({
@@ -418,7 +420,7 @@ const Income = () => {
         headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       });
 
-      await refreshTransactions();
+      editTransaction(editingId, { ...payload, id: editingId, type: 'income' });
       await fetchOverview(timeFrame ?? "monthly");
 
       setEditingId(null);
@@ -436,6 +438,7 @@ const Income = () => {
     refreshTransactions,
     fetchOverview,
     timeFrame,
+    editTransaction,
   ]);
   // to delete an income transaction
   const handleDeleteTransaction = useCallback(
@@ -450,7 +453,7 @@ const Income = () => {
           headers: getAuthHeaders(),
         });
 
-        await refreshTransactions();
+        deleteTransaction(id);
         await fetchOverview(timeFrame ?? "monthly");
       } catch (err) {
         console.error("Delete income error:", err);
@@ -460,7 +463,7 @@ const Income = () => {
         setLoading(false);
       }
     },
-    [getAuthHeaders, refreshTransactions, fetchOverview, timeFrame],
+    [getAuthHeaders, refreshTransactions, fetchOverview, timeFrame, deleteTransaction],
   );
   //to download the excel sheet
   const handleExport = useCallback(async () => {
