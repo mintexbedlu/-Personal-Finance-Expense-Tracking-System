@@ -30,7 +30,10 @@ import { getTimeFrameRange, generateChartPoints } from "../components/Helpers";
 import { CATEGORY_ICONS } from "../assets/color";
 import { expensePageStyles as styles } from "../assets/dummyStyles";
 
-const API_BASE = "http://localhost:4000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:4000" : "");
+const API_BASE = `${API_URL}/api`;
 
 /**
  * Helper: convert date (or datetime) to ISO by attaching client current time
@@ -82,6 +85,7 @@ const ExpensePage = () => {
     timeFrame = "monthly",
     setTimeFrame = () => {},
     refreshTransactions,
+    addTransaction,
   } = useOutletContext();
 
   const [showModal, setShowModal] = useState(false);
@@ -276,7 +280,17 @@ const ExpensePage = () => {
         date: toIsoWithClientTime(newTransaction.date),
       };
 
-      await handleApiRequest("post", "/expense/add", payload);
+      const res = await handleApiRequest("post", "/expense/add", payload);
+
+      if (res.data && res.data.success) {
+        const savedTx = res.data.data ||
+          res.data.transaction || {
+            ...payload,
+            id: Date.now(),
+            type: "expense",
+          };
+        addTransaction(savedTx);
+      }
 
       // If added date is outside the current visible range, switch view to that month
       const addedDate = new Date(payload.date || newTransaction.date);

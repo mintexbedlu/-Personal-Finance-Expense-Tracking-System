@@ -31,7 +31,10 @@ import { getTimeFrameRange, generateChartPoints } from "../components/Helpers";
 import { INCOME_COLORS, CATEGORY_ICONS_Inc } from "../assets/color";
 import { incomeStyles as styles } from "../assets/dummyStyles";
 
-const API_BASE = "http://localhost:4000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:4000" : "");
+const API_BASE = `${API_URL}/api`;
 
 //helps in converting date to ISO time
 
@@ -187,6 +190,7 @@ const Income = () => {
     timeFrame = "monthly",
     setTimeFrame = () => {},
     refreshTransactions,
+    addTransaction,
   } = useOutletContext();
 
   const [showModal, setShowModal] = useState(false);
@@ -361,9 +365,15 @@ const Income = () => {
         date: toIsoWithClientTime(newTransaction.date),
       };
 
-      await axios.post(`${API_BASE}/income/add`, payload, {
+      const res = await axios.post(`${API_BASE}/income/add`, payload, {
         headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       });
+
+      if (res.data && res.data.success) {
+        const savedTx = res.data.data || res.data.transaction || { ...payload, id: Date.now(), type: 'income' };
+        addTransaction(savedTx);
+      }
+
       await refreshTransactions();
       await fetchOverview(timeFrame ?? "monthly");
 
@@ -388,6 +398,7 @@ const Income = () => {
     refreshTransactions,
     fetchOverview,
     timeFrame,
+    addTransaction,
   ]);
   //to update an income
   const handleEditTransaction = useCallback(async () => {

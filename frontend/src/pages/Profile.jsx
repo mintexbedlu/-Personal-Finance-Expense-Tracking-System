@@ -6,7 +6,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
-const BASE_URL = "http://localhost:4000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:4000" : "");
+const BASE_URL = `${API_URL}/api`;
 
 Modal.setAppElement("#root");
 // Move PasswordInput component outside of ProfilePage to prevent recreation on every render
@@ -71,7 +74,10 @@ const Profile = ({ user: initialUser, onUpdateProfile, onLogout }) => {
   const [passwordErrors, setPasswordErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const getAuthToken = useCallback(() => localStorage.getItem("token") || sessionStorage.getItem("token"), []);
+  const getAuthToken = useCallback(
+    () => localStorage.getItem("token") || sessionStorage.getItem("token"),
+    [],
+  );
 
   //API request
 

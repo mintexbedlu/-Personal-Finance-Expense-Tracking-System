@@ -45,7 +45,10 @@ import {
 import AddTransactionModal from "../components/Add";
 import TimeFrameSelector from "../components/TimeFrame";
 
-const API_BASE = "http://localhost:4000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:4000" : "");
+const API_BASE = `${API_URL}/api`;
 
 const getAuthHeader = () => {
   const token =
@@ -111,6 +114,7 @@ const Dashboard = () => {
     timeFrame = "monthly",
     setTimeFrame = () => {},
     refreshTransactions,
+    addTransaction,
   } = useOutletContext();
 
   const [showModal, setShowModal] = useState(false);
@@ -410,17 +414,30 @@ const Dashboard = () => {
 
     try {
       setLoading(true);
+      let res;
       if (newTransaction.type === "income") {
-        await axios.post(`${API_BASE}/income/add`, payload, {
+        res = await axios.post(`${API_BASE}/income/add`, payload, {
           headers: getAuthHeader(),
         });
       } else {
-        await axios.post(`${API_BASE}/expense/add`, payload, {
+        res = await axios.post(`${API_BASE}/expense/add`, payload, {
           headers: getAuthHeader(),
         });
       }
-      await refreshTransactions();
-      await fetchDashboardOverview();
+
+      if (res && res.data && res.data.success) {
+        const savedTx = res.data.data ||
+          res.data.transaction || {
+            ...payload,
+            id: Date.now(),
+            type: newTransaction.type,
+          };
+        addTransaction(savedTx);
+        await fetchDashboardOverview();
+      } else {
+        // Fallback if success flag is missing but no error threw
+        await fetchDashboardOverview();
+      }
 
       setNewTransaction({
         date: new Date().toISOString().split("T")[0],
