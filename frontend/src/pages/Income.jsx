@@ -488,11 +488,19 @@ const Income = () => {
         responseType: "blob",
       });
 
+      // Check if the response is JSON (error message) instead of a file
+      if (
+        res.headers["content-type"] &&
+        res.headers["content-type"].includes("application/json")
+      ) {
+        throw new Error("Server returned JSON instead of Excel file");
+      }
+
       const blob = new Blob([res.data], {
-        type: res.headers["content-type"] || "application/octet-stream",
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       const disposition = res.headers["content-disposition"];
-      let filename = "income_details.xlsx";
+      let filename = `income_details_${new Date().toISOString().split("T")[0]}.xlsx`;
       if (disposition) {
         const match = disposition.match(/filename="?(.+)"?/);
         if (match && match[1]) filename = match[1];
@@ -503,6 +511,7 @@ const Income = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(link.href);
     } catch (err) {
       console.error("Export error:", err);
       try {
