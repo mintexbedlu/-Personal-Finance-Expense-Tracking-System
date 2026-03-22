@@ -489,11 +489,17 @@ const Income = () => {
       });
 
       // Check if the response is JSON (error message) instead of a file
+      const contentType = res.headers["content-type"];
       if (
-        res.headers["content-type"] &&
-        res.headers["content-type"].includes("application/json")
+        contentType &&
+        (contentType.includes("application/json") ||
+          contentType.includes("text/html") ||
+          contentType.includes("text/plain"))
       ) {
-        throw new Error("Server returned JSON instead of Excel file");
+        throw new Error("Server returned invalid content type");
+      }
+      if (res.data && res.data.size < 100) {
+        throw new Error("File too small to be a valid Excel file");
       }
 
       const blob = new Blob([res.data], {
