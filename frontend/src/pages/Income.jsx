@@ -171,8 +171,12 @@ const FilterSection = ({ filter, setFilter, handleExport }) => (
         <option value="all">All Transactions</option>
         <option value="Salary">Salary</option>
         <option value="Freelance">Freelance</option>
-        <option value="Investment">Investment</option>
+        <option value="Investments">Investments</option>
         <option value="Bonus">Bonus</option>
+        <option value="Gift">Gift</option>
+        <option value="Rental">Rental</option>
+        <option value="Dividends">Dividends</option>
+        <option value="Refund">Refund</option>
         <option value="Other">Other</option>
       </select>
       <Filter className={styles.filterIcon} />
@@ -372,7 +376,12 @@ const Income = () => {
       });
 
       if (res.data && res.data.success) {
-        const savedTx = res.data.data || res.data.transaction || { ...payload, id: Date.now(), type: 'income' };
+        const savedTx = res.data.data ||
+          res.data.transaction || {
+            ...payload,
+            id: Date.now(),
+            type: "income",
+          };
         addTransaction(savedTx);
       }
 
@@ -420,7 +429,7 @@ const Income = () => {
         headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       });
 
-      editTransaction(editingId, { ...payload, id: editingId, type: 'income' });
+      editTransaction(editingId, { ...payload, id: editingId, type: "income" });
       await fetchOverview(timeFrame ?? "monthly");
 
       setEditingId(null);
@@ -463,7 +472,13 @@ const Income = () => {
         setLoading(false);
       }
     },
-    [getAuthHeaders, refreshTransactions, fetchOverview, timeFrame, deleteTransaction],
+    [
+      getAuthHeaders,
+      refreshTransactions,
+      fetchOverview,
+      timeFrame,
+      deleteTransaction,
+    ],
   );
   //to download the excel sheet
   const handleExport = useCallback(async () => {
@@ -684,7 +699,17 @@ const Income = () => {
         type="income"
         title="Add New Income"
         buttonText="Add Income"
-        categories={["Salary", "Freelance", "Investment", "Bonus", "Other"]}
+        categories={[
+          "Salary",
+          "Freelance",
+          "Investments",
+          "Bonus",
+          "Gift",
+          "Rental",
+          "Dividends",
+          "Refund",
+          "Other",
+        ]}
         color="teal"
       />
     </div>

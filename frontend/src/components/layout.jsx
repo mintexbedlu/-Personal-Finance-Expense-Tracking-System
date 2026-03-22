@@ -22,6 +22,10 @@ import {
   ChevronDown,
   ChevronUp,
   PieChart,
+  GraduationCap,
+  Plane,
+  User,
+  Shield,
 } from "lucide-react";
 import axios from "axios";
 import { Outlet } from "react-router-dom";
@@ -38,6 +42,15 @@ const CATEGORY_ICONS = {
   Salary: <ArrowUp className="w-4 h-4" />,
   Freelance: <CreditCard className="w-4 h-4" />,
   Savings: <PiggyBank className="w-4 h-4" />,
+  Investments: <TrendingUp className="w-4 h-4" />,
+  Bonus: <Gift className="w-4 h-4" />,
+  Gift: <Gift className="w-4 h-4" />,
+  Rental: <Home className="w-4 h-4" />,
+  Education: <GraduationCap className="w-4 h-4" />,
+  Travel: <Plane className="w-4 h-4" />,
+  Personal: <User className="w-4 h-4" />,
+  Insurance: <Shield className="w-4 h-4" />,
+  Other: <Info className="w-4 h-4" />,
 };
 
 //to filter

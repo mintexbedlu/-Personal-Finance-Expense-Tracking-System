@@ -20,7 +20,7 @@ const AddTransactionModal = ({
     "Utilities",
     "Healthcare",
     "Salary",
-    "Freelance",
+    "Freelance", // Keeping explicit props for fallback
     "Investments",
     "Bonus",
     "Other",
@@ -40,13 +40,30 @@ const AddTransactionModal = ({
   const [error, setError] = useState("");
 
   // Valid categories matching backend schema
-  const INCOME_CATEGORIES = ["Salary", "Freelance", "Investments"];
+  const INCOME_CATEGORIES = [
+    "Salary",
+    "Freelance",
+    "Investments",
+    "Bonus",
+    "Gift",
+    "Rental",
+    "Dividends",
+    "Refund",
+    "Other",
+  ];
   const EXPENSE_CATEGORIES = [
     "Food",
     "Housing",
     "Transport",
+    "Shopping",
     "Entertainment",
     "Utilities",
+    "Healthcare",
+    "Education",
+    "Travel",
+    "Personal",
+    "Insurance",
+    "Other",
   ];
 
   const currentCategories =
@@ -85,14 +102,20 @@ const AddTransactionModal = ({
               await handleAddTransaction();
               setShowModal(false);
             } catch (err) {
-              setError(err.response?.data?.message || err.message || "Error adding transaction");
+              setError(
+                err.response?.data?.message ||
+                  err.message ||
+                  "Error adding transaction",
+              );
             } finally {
               setIsSubmitting(false);
             }
           }}
         >
           <div className={modalStyles.form}>
-            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
             <div>
               <label className={modalStyles.label}>Description</label>
               <input
